@@ -1,4 +1,4 @@
-# ◈ Audio Manager
+# ◈ Wax Moth
 
 Herramienta de escritorio para escanear colecciones de audio, visualizar metadatos y detectar archivos duplicados mediante huella acústica (Chromaprint).
 
@@ -28,7 +28,7 @@ Asegúrate de tener instalado lo siguiente antes de continuar:
 
 ```bash
 git clone https://github.com/tu-usuario/audio-manager.git
-cd audio-manager
+cd Wax_moth
 ```
 
 ### 2. Configurar el backend (Python)
@@ -92,7 +92,7 @@ Abre `http://localhost:5173` en el navegador.
 ## Estructura del proyecto
 
 ```
-audio-manager/
+Wax_moth/
 ├── backend/
 │   ├── main.py           # API FastAPI
 │   ├── run.py            # Lanzador del servidor
