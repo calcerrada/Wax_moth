@@ -11,6 +11,6 @@ if __name__ == "__main__":
         "main:app",
         host="127.0.0.1",
         port=8000,
-        reload=True,          # recarga automática al editar main.py
+        reload=True,          # recarga automatica al editar backend/
         log_level="info",
     )
