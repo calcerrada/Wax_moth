@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { API } from '../constants/appConstants'
 
 export function useAudioScan({ onScanStart, onResetState } = {}) {
+  const { t } = useTranslation()
   const [folder, setFolder] = useState('')
   const [detectDups, setDetectDups] = useState(true)
   const [scanStatus, setScanStatus] = useState('idle')
@@ -35,11 +37,11 @@ export function useAudioScan({ onScanStart, onResetState } = {}) {
         }
       } catch {
         clearInterval(pollRef.current)
-        setError('No se pudo conectar con el servidor.')
+        setError(t('errors.connection'))
         setScanStatus('error')
       }
     }, 500)
-  }, [])
+  }, [t])
 
   const handleScan = useCallback(async () => {
     if (!folder.trim()) return
@@ -62,14 +64,14 @@ export function useAudioScan({ onScanStart, onResetState } = {}) {
       })
       if (!res.ok) {
         const err = await res.json()
-        throw new Error(err.detail || 'Error al iniciar el escaneo.')
+        throw new Error(err.detail || t('errors.startScan'))
       }
       startPolling()
     } catch (e) {
       setError(e.message)
       setScanStatus('error')
     }
-  }, [folder, detectDups, startPolling, onScanStart])
+  }, [folder, detectDups, startPolling, onScanStart, t])
 
   const handleReset = useCallback(async () => {
     clearInterval(pollRef.current)

@@ -1,0 +1,88 @@
+{
+  "app": {
+    "title": "Audio Manager",
+    "newScan": "← New scan",
+    "language": "Language",
+    "deleteFeedback": "{{count}} file deleted successfully.",
+    "deleteFeedback_one": "{{count}} file deleted successfully.",
+    "deleteFeedback_other": "{{count}} files deleted successfully.",
+    "deleteFailed": "{{count}} failed.",
+    "deleteFailed_one": "{{count}} failed.",
+    "deleteFailed_other": "{{count}} failed.",
+    "tabs": {
+      "files": "Files",
+      "duplicates": "Duplicates"
+    }
+  },
+  "scan": {
+    "title": "Scan audio folder",
+    "subtitle": "Analyze MP3, FLAC, WAV, AIFF and OGG files. Detect duplicates using acoustic fingerprint.",
+    "folderPath": "Folder path",
+    "folderPlaceholder": "C:\\\\Users\\\\...\\\\Music",
+    "detectDuplicates": "Detect duplicates using acoustic fingerprint (fpcalc)",
+    "start": "Start scan",
+    "scanning": "Scanning...",
+    "retry": "Retry"
+  },
+  "progress": {
+    "files": "{{progress}} / {{total}} files - {{pct}}%"
+  },
+  "stats": {
+    "files": "files",
+    "duplicateGroups": "duplicate groups",
+    "formats": "formats"
+  },
+  "filters": {
+    "searchPlaceholder": "Search by file name, artist, title...",
+    "all": "All"
+  },
+  "files": {
+    "headers": {
+      "file": "File",
+      "title": "Title",
+      "artist": "Artist",
+      "duration": "Duration",
+      "size": "Size",
+      "bitrate": "Bitrate"
+    },
+    "none": "No matching files.",
+    "empty": "-"
+  },
+  "duplicates": {
+    "noneFound": "No duplicates found.",
+    "detectionDisabledHint": "Acoustic fingerprint detection was disabled.",
+    "autoSelectAllWorst": "Auto-select all lower quality",
+    "clearSelection": "Clear selection ({{count}})",
+    "deleting": "Deleting...",
+    "deleteSelected": "Delete {{count}} file",
+    "deleteSelected_one": "Delete {{count}} file",
+    "deleteSelected_other": "Delete {{count}} files",
+    "groupLabel": "Group {{index}}",
+    "copies": "{{count}} copies",
+    "copies_one": "{{count}} copy",
+    "copies_other": "{{count}} copies",
+    "autoSelectWorst": "Auto-select lower quality",
+    "autoSelectWorstTitle": "Automatically mark lower quality files for deletion",
+    "quality": {
+      "best": "Best quality",
+      "lower": "Lower quality"
+    },
+    "markedInGroup": "{{count}} file marked for deletion in this group",
+    "markedInGroup_one": "{{count}} file marked for deletion in this group",
+    "markedInGroup_other": "{{count}} files marked for deletion in this group"
+  },
+  "confirm": {
+    "title": "Confirm permanent deletion",
+    "body": "You are about to permanently delete <1>{{count}} file</1> from disk. This action cannot be undone.",
+    "body_one": "You are about to permanently delete <1>{{count}} file</1> from disk. This action cannot be undone.",
+    "body_other": "You are about to permanently delete <1>{{count}} files</1> from disk. This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete {{count}} file",
+    "delete_one": "Delete {{count}} file",
+    "delete_other": "Delete {{count}} files"
+  },
+  "errors": {
+    "connection": "Could not connect to the server.",
+    "startScan": "Could not start the scan."
+  }
+}

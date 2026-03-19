@@ -57,6 +57,39 @@
   letter-spacing: 0.04em;
   color: var(--text-main);
 }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.lang-btn:hover { color: var(--text-main); }
+
+.lang-btn-active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
 
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
 .btn-ghost {

@@ -1,17 +1,20 @@
+import { Trans, useTranslation } from 'react-i18next'
+
 export default function ConfirmModal({ count, onConfirm, onCancel }) {
+  const { t } = useTranslation()
+
   return (
     <div className="modal-overlay">
       <div className="modal">
         <div className="modal-icon">⚠</div>
-        <h3 className="modal-title">Confirmar borrado permanente</h3>
+        <h3 className="modal-title">{t('confirm.title')}</h3>
         <p className="modal-body">
-          Vas a eliminar <strong>{count} archivo{count !== 1 ? 's' : ''}</strong> del
-          disco de forma permanente. Esta acción no se puede deshacer.
+          <Trans i18nKey="confirm.body" count={count} components={[<strong key="strong" />]} />
         </p>
         <div className="modal-actions">
-          <button className="btn-ghost" onClick={onCancel}>Cancelar</button>
+          <button className="btn-ghost" onClick={onCancel}>{t('confirm.cancel')}</button>
           <button className="btn-danger" onClick={onConfirm}>
-            Borrar {count} archivo{count !== 1 ? 's' : ''}
+            {t('confirm.delete', { count })}
           </button>
         </div>
       </div>

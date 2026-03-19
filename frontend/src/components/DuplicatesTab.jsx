@@ -1,4 +1,5 @@
 import DuplicateGroup from './DuplicateGroup'
+import { useTranslation } from 'react-i18next'
 
 export default function DuplicatesTab({
   dupCount,
@@ -13,14 +14,16 @@ export default function DuplicatesTab({
   onAutoSelectGroup,
   selected,
 }) {
+  const { t } = useTranslation()
+
   return (
     <div className="duplicates-panel">
       {dupCount === 0 ? (
         <div className="no-dups">
           <span className="no-dups-icon">✓</span>
-          <p>No se encontraron duplicados.</p>
+          <p>{t('duplicates.noneFound')}</p>
           {!detectDups && (
-            <p className="no-dups-hint">La detección por huella acústica estaba desactivada.</p>
+            <p className="no-dups-hint">{t('duplicates.detectionDisabledHint')}</p>
           )}
         </div>
       ) : (
@@ -28,11 +31,11 @@ export default function DuplicatesTab({
           <div className="dup-actions-bar">
             <div className="dup-actions-left">
               <button className="btn-auto-select-all" onClick={onAutoSelectAll}>
-                Auto-seleccionar todos los peores
+                {t('duplicates.autoSelectAllWorst')}
               </button>
               {selectedCount > 0 && (
                 <button className="btn-ghost-sm" onClick={onClearSelection}>
-                  Limpiar selección ({selectedCount})
+                  {t('duplicates.clearSelection', { count: selectedCount })}
                 </button>
               )}
             </div>
@@ -43,8 +46,8 @@ export default function DuplicatesTab({
                 disabled={deleteStatus === 'deleting'}
               >
                 {deleteStatus === 'deleting'
-                  ? 'Borrando...'
-                  : `Borrar ${selectedCount} archivo${selectedCount !== 1 ? 's' : ''}`
+                  ? t('duplicates.deleting')
+                  : t('duplicates.deleteSelected', { count: selectedCount })
                 }
               </button>
             )}

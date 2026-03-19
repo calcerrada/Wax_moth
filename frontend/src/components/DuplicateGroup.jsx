@@ -1,22 +1,24 @@
 import Badge from './Badge'
+import { useTranslation } from 'react-i18next'
 import { formatSize } from '../utils/formatters'
 
 export default function DuplicateGroup({ group, index, selected, onToggle, onAutoSelect }) {
+  const { t } = useTranslation()
   const selectedCount = group.files.filter(f => selected.has(f.path)).length
 
   return (
     <div className="dup-group">
       <div className="dup-header">
         <div className="dup-header-left">
-          <span className="dup-label">Grupo {index + 1}</span>
-          <span className="dup-count">{group.files.length} copias</span>
+          <span className="dup-label">{t('duplicates.groupLabel', { index: index + 1 })}</span>
+          <span className="dup-count">{t('duplicates.copies', { count: group.files.length })}</span>
         </div>
         <button
           className="btn-auto-select"
           onClick={() => onAutoSelect(group)}
-          title="Marcar automáticamente los de menor calidad para borrar"
+          title={t('duplicates.autoSelectWorstTitle')}
         >
-          Auto-seleccionar peores
+          {t('duplicates.autoSelectWorst')}
         </button>
       </div>
 
@@ -55,8 +57,8 @@ export default function DuplicateGroup({ group, index, selected, onToggle, onAut
               <span className="dup-size">{formatSize(f.size_bytes)}</span>
 
               {isBest
-                ? <span className="quality-tag quality-best">Mejor calidad</span>
-                : <span className="quality-tag quality-lower">Menor calidad</span>
+                ? <span className="quality-tag quality-best">{t('duplicates.quality.best')}</span>
+                : <span className="quality-tag quality-lower">{t('duplicates.quality.lower')}</span>
               }
             </div>
           )
@@ -65,7 +67,7 @@ export default function DuplicateGroup({ group, index, selected, onToggle, onAut
 
       {selectedCount > 0 && (
         <div className="dup-footer">
-          {selectedCount} archivo{selectedCount !== 1 ? 's' : ''} marcado{selectedCount !== 1 ? 's' : ''} para borrar en este grupo
+          {t('duplicates.markedInGroup', { count: selectedCount })}
         </div>
       )}
     </div>

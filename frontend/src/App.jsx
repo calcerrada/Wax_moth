@@ -1,4 +1,5 @@
 import './App.css'
+import { useTranslation } from 'react-i18next'
 import ConfirmModal from './components/ConfirmModal'
 import ScanIdlePanel from './components/ScanIdlePanel'
 import ScanProgressPanel from './components/ScanProgressPanel'
@@ -13,6 +14,8 @@ import { useDeleteFiles } from './hooks/useDeleteFiles'
 import { useResultsUI } from './hooks/useResultsUI'
 
 export default function App() {
+  const { t, i18n } = useTranslation()
+
   const {
     activeTab,
     setActiveTab,
@@ -88,6 +91,7 @@ export default function App() {
   }
 
   const dupCount      = results?.duplicate_groups?.length ?? 0
+  const handleLanguageChange = lng => i18n.changeLanguage(lng)
 
   return (
     <div className="app">
@@ -102,11 +106,27 @@ export default function App() {
       <header className="app-header">
         <div className="header-brand">
           <span className="header-icon">◈</span>
-          <span className="header-title">Audio Manager</span>
+          <span className="header-title">{t('app.title')}</span>
         </div>
-        {scanStatus === 'done' && (
-          <button className="btn-ghost" onClick={handleReset}>← Nuevo escaneo</button>
-        )}
+        <div className="header-actions">
+          {scanStatus === 'done' && (
+            <button className="btn-ghost" onClick={handleReset}>{t('app.newScan')}</button>
+          )}
+          <div className="lang-switch" role="group" aria-label={t('app.language')}>
+            <button
+              className={`lang-btn ${i18n.resolvedLanguage === 'en' ? 'lang-btn-active' : ''}`}
+              onClick={() => handleLanguageChange('en')}
+            >
+              EN
+            </button>
+            <button
+              className={`lang-btn ${i18n.resolvedLanguage === 'es' ? 'lang-btn-active' : ''}`}
+              onClick={() => handleLanguageChange('es')}
+            >
+              ES
+            </button>
+          </div>
+        </div>
       </header>
 
       {scanStatus === 'idle' && (
@@ -139,9 +159,9 @@ export default function App() {
             <div className="delete-feedback">
               <span className="delete-feedback-ok">✓</span>
               <span>
-                {deleteResult.deleted.length} archivo{deleteResult.deleted.length !== 1 ? 's' : ''} eliminado{deleteResult.deleted.length !== 1 ? 's' : ''} correctamente.
+                {t('app.deleteFeedback', { count: deleteResult.deleted.length })}
                 {deleteResult.failed.length > 0 && (
-                  <> {deleteResult.failed.length} fallaron.</>
+                  <> {t('app.deleteFailed', { count: deleteResult.failed.length })}</>
                 )}
               </span>
             </div>
@@ -152,13 +172,13 @@ export default function App() {
               className={`tab ${activeTab === 'files' ? 'tab-active' : ''}`}
               onClick={() => setActiveTab('files')}
             >
-              Archivos
+              {t('app.tabs.files')}
             </button>
             <button
               className={`tab ${activeTab === 'duplicates' ? 'tab-active' : ''}`}
               onClick={() => setActiveTab('duplicates')}
             >
-              Duplicados
+              {t('app.tabs.duplicates')}
               {dupCount > 0 && <span className="tab-badge">{dupCount}</span>}
             </button>
           </div>

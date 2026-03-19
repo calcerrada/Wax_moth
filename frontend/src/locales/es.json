@@ -1,0 +1,88 @@
+{
+  "app": {
+    "title": "Audio Manager",
+    "newScan": "← Nuevo escaneo",
+    "language": "Idioma",
+    "deleteFeedback": "{{count}} archivo eliminado correctamente.",
+    "deleteFeedback_one": "{{count}} archivo eliminado correctamente.",
+    "deleteFeedback_other": "{{count}} archivos eliminados correctamente.",
+    "deleteFailed": "{{count}} fallaron.",
+    "deleteFailed_one": "{{count}} fallo.",
+    "deleteFailed_other": "{{count}} fallaron.",
+    "tabs": {
+      "files": "Archivos",
+      "duplicates": "Duplicados"
+    }
+  },
+  "scan": {
+    "title": "Escanear carpeta de audio",
+    "subtitle": "Analiza archivos MP3, FLAC, WAV, AIFF y OGG. Detecta duplicados por huella acústica.",
+    "folderPath": "Ruta de la carpeta",
+    "folderPlaceholder": "C:\\\\Users\\\\...\\\\Music",
+    "detectDuplicates": "Detectar duplicados por huella acústica (fpcalc)",
+    "start": "Iniciar escaneo",
+    "scanning": "Escaneando...",
+    "retry": "Reintentar"
+  },
+  "progress": {
+    "files": "{{progress}} / {{total}} archivos - {{pct}}%"
+  },
+  "stats": {
+    "files": "archivos",
+    "duplicateGroups": "grupos duplicados",
+    "formats": "formatos"
+  },
+  "filters": {
+    "searchPlaceholder": "Buscar por nombre, artista, título...",
+    "all": "Todos"
+  },
+  "files": {
+    "headers": {
+      "file": "Archivo",
+      "title": "Título",
+      "artist": "Artista",
+      "duration": "Duración",
+      "size": "Tamaño",
+      "bitrate": "Bitrate"
+    },
+    "none": "No hay archivos que coincidan.",
+    "empty": "-"
+  },
+  "duplicates": {
+    "noneFound": "No se encontraron duplicados.",
+    "detectionDisabledHint": "La detección por huella acústica estaba desactivada.",
+    "autoSelectAllWorst": "Auto-seleccionar todos los peores",
+    "clearSelection": "Limpiar selección ({{count}})",
+    "deleting": "Borrando...",
+    "deleteSelected": "Borrar {{count}} archivo",
+    "deleteSelected_one": "Borrar {{count}} archivo",
+    "deleteSelected_other": "Borrar {{count}} archivos",
+    "groupLabel": "Grupo {{index}}",
+    "copies": "{{count}} copias",
+    "copies_one": "{{count}} copia",
+    "copies_other": "{{count}} copias",
+    "autoSelectWorst": "Auto-seleccionar peores",
+    "autoSelectWorstTitle": "Marcar automáticamente los de menor calidad para borrar",
+    "quality": {
+      "best": "Mejor calidad",
+      "lower": "Menor calidad"
+    },
+    "markedInGroup": "{{count}} archivo marcado para borrar en este grupo",
+    "markedInGroup_one": "{{count}} archivo marcado para borrar en este grupo",
+    "markedInGroup_other": "{{count}} archivos marcados para borrar en este grupo"
+  },
+  "confirm": {
+    "title": "Confirmar borrado permanente",
+    "body": "Vas a eliminar <1>{{count}} archivo</1> del disco de forma permanente. Esta acción no se puede deshacer.",
+    "body_one": "Vas a eliminar <1>{{count}} archivo</1> del disco de forma permanente. Esta acción no se puede deshacer.",
+    "body_other": "Vas a eliminar <1>{{count}} archivos</1> del disco de forma permanente. Esta acción no se puede deshacer.",
+    "cancel": "Cancelar",
+    "delete": "Borrar {{count}} archivo",
+    "delete_one": "Borrar {{count}} archivo",
+    "delete_other": "Borrar {{count}} archivos"
+  },
+  "errors": {
+    "connection": "No se pudo conectar con el servidor.",
+    "startScan": "Error al iniciar el escaneo."
+  }
+}
