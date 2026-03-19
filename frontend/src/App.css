@@ -563,3 +563,36 @@
   font-size: 12px; color: var(--red);
   font-family: var(--font-mono);
 }
+
+/* ── Header Navigation ───────────────────────────────────────────────────── */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  border-color: var(--border-light);
+}
+
+.nav-link-active {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: var(--border-light);
+}

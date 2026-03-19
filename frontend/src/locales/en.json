@@ -14,11 +14,19 @@
       "duplicates": "Duplicates"
     }
   },
+  "nav": {
+    "scan": "Scan",
+    "services": "Services"
+  },
   "welcome": {
     "appName": "Audio Manager",
     "subtitle": "Quickly scan your audio library and clean duplicate tracks.",
     "getStarted": "Get Started",
     "logoAlt": "Audio Manager application logo"
+  },
+  "externalServices": {
+    "title": "External Services",
+    "placeholder": "This section is under construction."
   },
   "scan": {
     "title": "Scan audio folder",

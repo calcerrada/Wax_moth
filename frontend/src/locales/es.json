@@ -14,11 +14,19 @@
       "duplicates": "Duplicados"
     }
   },
+  "nav": {
+    "scan": "Escaneo",
+    "services": "Servicios"
+  },
   "welcome": {
     "appName": "Audio Manager",
     "subtitle": "Escanea tu biblioteca de audio y limpia pistas duplicadas rapidamente.",
     "getStarted": "Comenzar",
     "logoAlt": "Logotipo de la aplicacion Audio Manager"
+  },
+  "externalServices": {
+    "title": "Servicios Externos",
+    "placeholder": "Esta seccion esta en construccion."
   },
   "scan": {
     "title": "Escanear carpeta de audio",

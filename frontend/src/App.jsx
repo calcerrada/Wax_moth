@@ -14,7 +14,7 @@ import { useDeleteFiles } from './hooks/useDeleteFiles'
 import { useResultsUI } from './hooks/useResultsUI'
 
 export default function App() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const {
     activeTab,
@@ -91,7 +91,6 @@ export default function App() {
   }
 
   const dupCount      = results?.duplicate_groups?.length ?? 0
-  const handleLanguageChange = lng => i18n.changeLanguage(lng)
 
   return (
     <div className="app">
@@ -103,31 +102,6 @@ export default function App() {
         />
       )}
 
-      <header className="app-header">
-        <div className="header-brand">
-          <span className="header-icon">◈</span>
-          <span className="header-title">{t('app.title')}</span>
-        </div>
-        <div className="header-actions">
-          {scanStatus === 'done' && (
-            <button className="btn-ghost" onClick={handleReset}>{t('app.newScan')}</button>
-          )}
-          <div className="lang-switch" role="group" aria-label={t('app.language')}>
-            <button
-              className={`lang-btn ${i18n.resolvedLanguage === 'en' ? 'lang-btn-active' : ''}`}
-              onClick={() => handleLanguageChange('en')}
-            >
-              EN
-            </button>
-            <button
-              className={`lang-btn ${i18n.resolvedLanguage === 'es' ? 'lang-btn-active' : ''}`}
-              onClick={() => handleLanguageChange('es')}
-            >
-              ES
-            </button>
-          </div>
-        </div>
-      </header>
 
       {scanStatus === 'idle' && (
         <ScanIdlePanel

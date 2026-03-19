@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 export default function AppShell() {
@@ -16,6 +16,20 @@ export default function AppShell() {
             <span className="header-icon">◈</span>
             <span className="header-title">{t('app.title')}</span>
           </div>
+          <nav className="nav-menu" aria-label={t('app.title')}>
+            <NavLink
+              to="/scan"
+              className={({ isActive }) => (isActive ? 'nav-link nav-link-active' : 'nav-link')}
+            >
+              {t('nav.scan')}
+            </NavLink>
+            <NavLink
+              to="/services"
+              className={({ isActive }) => (isActive ? 'nav-link nav-link-active' : 'nav-link')}
+            >
+              {t('nav.services')}
+            </NavLink>
+          </nav>
           <div className="header-actions">
             <div className="lang-switch" role="group" aria-label={t('app.language')}>
               <button
