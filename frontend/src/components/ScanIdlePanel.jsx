@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import FolderPickerZone from './FolderPickerZone'
 
 export default function ScanIdlePanel({ folder, detectDups, onFolderChange, onDetectDupsChange, onScan }) {
   const { t } = useTranslation()
@@ -21,6 +22,7 @@ export default function ScanIdlePanel({ folder, detectDups, onFolderChange, onDe
             onKeyDown={e => e.key === 'Enter' && onScan()}
           />
         </div>
+        <FolderPickerZone onFolderSelected={onFolderChange} disabled={!folder && false} />
         <label className="checkbox-label">
           <input
             type="checkbox"

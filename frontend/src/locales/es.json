@@ -14,11 +14,21 @@
       "duplicates": "Duplicados"
     }
   },
+  "welcome": {
+    "appName": "Audio Manager",
+    "subtitle": "Escanea tu biblioteca de audio y limpia pistas duplicadas rapidamente.",
+    "getStarted": "Comenzar",
+    "logoAlt": "Logotipo de la aplicacion Audio Manager"
+  },
   "scan": {
     "title": "Escanear carpeta de audio",
     "subtitle": "Analiza archivos MP3, FLAC, WAV, AIFF y OGG. Detecta duplicados por huella acústica.",
     "folderPath": "Ruta de la carpeta",
     "folderPlaceholder": "C:\\\\Users\\\\...\\\\Music",
+    "dropZone": "Suelta una carpeta aquí o",
+    "browseFolder": "buscar carpeta",
+    "dropZoneActive": "Suelta para seleccionar carpeta",
+    "browseNotSupported": "o escribe la ruta arriba",
     "detectDuplicates": "Detectar duplicados por huella acústica (fpcalc)",
     "start": "Iniciar escaneo",
     "scanning": "Escaneando...",

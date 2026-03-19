@@ -14,11 +14,21 @@
       "duplicates": "Duplicates"
     }
   },
+  "welcome": {
+    "appName": "Audio Manager",
+    "subtitle": "Quickly scan your audio library and clean duplicate tracks.",
+    "getStarted": "Get Started",
+    "logoAlt": "Audio Manager application logo"
+  },
   "scan": {
     "title": "Scan audio folder",
     "subtitle": "Analyze MP3, FLAC, WAV, AIFF and OGG files. Detect duplicates using acoustic fingerprint.",
     "folderPath": "Folder path",
     "folderPlaceholder": "C:\\\\Users\\\\...\\\\Music",
+    "dropZone": "Drop a folder here or",
+    "browseFolder": "browse folder",
+    "dropZoneActive": "Release to select folder",
+    "browseNotSupported": "or type the path above",
     "detectDuplicates": "Detect duplicates using acoustic fingerprint (fpcalc)",
     "start": "Start scan",
     "scanning": "Scanning...",

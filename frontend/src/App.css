@@ -223,6 +223,51 @@
 }
 .input-path:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .input-path::placeholder { color: var(--text-dim); }
+
+.folder-picker-zone {
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg-card) 72%, var(--bg));
+  padding: 12px 14px;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.folder-picker-zone-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-dim) 70%, var(--bg-card));
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.folder-picker-zone-disabled {
+  opacity: 0.6;
+}
+
+.folder-picker-text {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.folder-picker-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.folder-picker-link:hover:not(:disabled) {
+  color: var(--text-main);
+}
+
+.folder-picker-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .checkbox-label {
   display: flex; align-items: center; gap: 10px;
   font-size: 14px; color: var(--text); cursor: pointer; user-select: none;
