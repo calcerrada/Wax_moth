@@ -41,3 +41,19 @@ Thumbs.db
 # ── Binarios externos (fpcalc se instala localmente, no se sube) ──────────────
 backend/bin/fpcalc
 backend/bin/fpcalc.exe
+
+# ── Coverage / Test reports ───────────────────────────────────────────────────
+# Python / backend (coverage.py, pytest-cov)
+.coverage
+.coverage.*
+htmlcov/
+backend/htmlcov/
+backend/.coverage
+backend/.coverage.*
+
+# Frontend / Vitest / V8 / Istanbul
+coverage/
+coverage-final.json
+frontend/coverage/
+frontend/coverage-final.json
+.nyc_output/
