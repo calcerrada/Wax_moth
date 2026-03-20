@@ -85,7 +85,7 @@ def _normalize_track_path(raw_path: str, db_path: Path) -> str:
         # Engine DJ stores paths relative to Database2/ using "../" prefix.
         # Resolving against grandparent^3 of m.db yields the correct absolute path.
         # Structure: Music/ > Engine Library/ > Database2/ > m.db
-        resolved = (Path(db_path).parent.parent.parent / normalized).resolve()
+        resolved = (Path(db_path).parent.parent / normalized).resolve()
         return str(resolved)
 
 
