@@ -42,3 +42,19 @@ class ScanResult(BaseModel):
 class DeleteResult(BaseModel):
     deleted: list[str]
     failed: list[dict]
+
+
+class EngineDJStatus(BaseModel):
+    found: bool
+    path: str | None
+    error: str | None
+
+
+class EngineDJConfigRequest(BaseModel):
+    db_path: str
+
+
+class EngineDJLibraryResult(BaseModel):
+    tracks: dict[str, list[str]]
+    total_tracks_in_library: int
+    total_tracks_with_collections: int

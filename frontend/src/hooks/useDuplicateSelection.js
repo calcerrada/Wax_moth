@@ -1,7 +1,12 @@
 import { useMemo, useState } from 'react'
 
-export function useDuplicateSelection(results) {
+export function useDuplicateSelection(results, engineDJLibrary = null) {
   const [selected, setSelected] = useState(new Set())
+
+  const isProtected = (path) => {
+    if (!engineDJLibrary || !path) return false
+    return Object.prototype.hasOwnProperty.call(engineDJLibrary, path)
+  }
 
   const toggleSelected = (path) => {
     setSelected(prev => {
@@ -14,7 +19,11 @@ export function useDuplicateSelection(results) {
   const autoSelectGroup = (group) => {
     setSelected(prev => {
       const next = new Set(prev)
-      group.files.slice(1).forEach(f => next.add(f.path))
+      group.files.slice(1).forEach(f => {
+        if (!isProtected(f.path)) {
+          next.add(f.path)
+        }
+      })
       return next
     })
   }
@@ -24,7 +33,11 @@ export function useDuplicateSelection(results) {
     setSelected(prev => {
       const next = new Set(prev)
       results.duplicate_groups.forEach(g => {
-        g.files.slice(1).forEach(f => next.add(f.path))
+        g.files.slice(1).forEach(f => {
+          if (!isProtected(f.path)) {
+            next.add(f.path)
+          }
+        })
       })
       return next
     })
@@ -42,5 +55,6 @@ export function useDuplicateSelection(results) {
     autoSelectGroup,
     autoSelectAll,
     clearSelection,
+    isProtected,
   }
 }

@@ -80,6 +80,69 @@ describe('useDuplicateSelection', () => {
     expect(result.current.selectedCount).toBe(3)
   })
 
+  test('autoSelectGroup no selecciona tracks protegidos por Engine DJ', () => {
+    const group = {
+      files: [
+        { path: '/music/best.flac' },
+        { path: '/music/worse-1.mp3' },
+        { path: '/music/worse-2.mp3' },
+      ],
+    }
+
+    const engineDJLibrary = {
+      '/music/worse-1.mp3': ['Playlist A'],
+    }
+
+    const { result } = renderHook(() => useDuplicateSelection(null, engineDJLibrary))
+
+    act(() => {
+      result.current.autoSelectGroup(group)
+    })
+
+    expect(result.current.selected.has('/music/best.flac')).toBe(false)
+    expect(result.current.selected.has('/music/worse-1.mp3')).toBe(false)
+    expect(result.current.selected.has('/music/worse-2.mp3')).toBe(true)
+    expect(result.current.selectedCount).toBe(1)
+  })
+
+  test('autoSelectAll no selecciona tracks protegidos por Engine DJ', () => {
+    const results = {
+      duplicate_groups: [
+        {
+          files: [
+            { path: '/music/g1-best.flac' },
+            { path: '/music/g1-worse.mp3' },
+          ],
+        },
+        {
+          files: [
+            { path: '/music/g2-best.wav' },
+            { path: '/music/g2-worse.aiff' },
+            { path: '/music/g2-worse-2.ogg' },
+          ],
+        },
+      ],
+    }
+
+    const engineDJLibrary = {
+      '/music/g1-worse.mp3': ['Playlist A'],
+      '/music/g2-worse.aiff': ['Crate B'],
+    }
+
+    const { result } = renderHook(() => useDuplicateSelection(results, engineDJLibrary))
+
+    act(() => {
+      result.current.autoSelectAll()
+    })
+
+    expect(result.current.selected.has('/music/g1-best.flac')).toBe(false)
+    expect(result.current.selected.has('/music/g1-worse.mp3')).toBe(false)
+    expect(result.current.selected.has('/music/g2-best.wav')).toBe(false)
+    expect(result.current.selected.has('/music/g2-worse.aiff')).toBe(false)
+    expect(result.current.selected.has('/music/g2-worse-2.ogg')).toBe(true)
+    expect(result.current.selectedCount).toBe(1)
+  })
+
   test('clearSelection limpia la seleccion actual', () => {
     const { result } = renderHook(() => useDuplicateSelection(null))
 

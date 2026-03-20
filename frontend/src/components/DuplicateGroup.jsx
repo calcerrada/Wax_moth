@@ -2,7 +2,7 @@ import Badge from './Badge'
 import { useTranslation } from 'react-i18next'
 import { formatSize } from '../utils/formatters'
 
-export default function DuplicateGroup({ group, index, selected, onToggle, onAutoSelect }) {
+export default function DuplicateGroup({ group, index, selected, onToggle, onAutoSelect, engineDJLibrary = null }) {
   const { t } = useTranslation()
   const selectedCount = group.files.filter(f => selected.has(f.path)).length
 
@@ -26,12 +26,15 @@ export default function DuplicateGroup({ group, index, selected, onToggle, onAut
         {group.files.map((f, i) => {
           const isBest = i === 0
           const isSelected = selected.has(f.path)
+          const isInUse = engineDJLibrary !== null && Object.prototype.hasOwnProperty.call(engineDJLibrary, f.path)
+          const collections = engineDJLibrary?.[f.path] ?? []
           const kbps = f.bitrate ? Math.round(f.bitrate / 1000) : null
+          const collectionTooltip = collections.join(', ')
 
           return (
             <div
               key={f.path}
-              className={`dup-file ${isSelected ? 'dup-file-selected' : ''} ${isBest ? 'dup-file-best' : ''}`}
+              className={`dup-file ${isSelected ? 'dup-file-selected' : ''} ${isBest ? 'dup-file-best' : ''} ${isInUse ? 'dup-file-in-use' : ''}`}
               onClick={() => onToggle(f.path)}
             >
               <input
@@ -43,9 +46,19 @@ export default function DuplicateGroup({ group, index, selected, onToggle, onAut
               />
 
               <div className="dup-badges">
-                <Badge ext={f.extension} />
-                {kbps && (
-                  <span className="bitrate-badge">{kbps} kbps</span>
+                <div className="dup-badges-main">
+                  <Badge ext={f.extension} />
+                  {kbps && (
+                    <span className="bitrate-badge">{kbps} kbps</span>
+                  )}
+                </div>
+                {isInUse && (
+                  <span className="engine-dj-badge" title={collections.length > 1 ? collectionTooltip : undefined}>
+                    {collections.length > 1
+                      ? `🎛 ${t('engineDJ.collections', { count: collections.length })}`
+                      : `🎛 ${collections[0] || t('engineDJ.inUse')}`
+                    }
+                  </span>
                 )}
               </div>
 

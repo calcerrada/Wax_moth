@@ -1,0 +1,174 @@
+import json
+import sqlite3
+from pathlib import Path
+
+from config import ENGINE_DJ_CONFIG_PATH, ENGINE_DJ_DEFAULT_PATHS
+
+
+class EngineDJLockedError(Exception):
+    pass
+
+
+class EngineDJSchemaError(Exception):
+    pass
+
+
+def find_engine_db() -> Path | None:
+    if ENGINE_DJ_CONFIG_PATH.exists():
+        try:
+            payload = json.loads(ENGINE_DJ_CONFIG_PATH.read_text(encoding="utf-8"))
+            configured_path = payload.get("engine_db_path")
+            if isinstance(configured_path, str):
+                candidate = Path(configured_path).expanduser()
+                if candidate.exists() and candidate.is_file():
+                    return candidate
+        except Exception as exc:
+            raise ValueError(
+                f"Failed to read Engine DJ config at {ENGINE_DJ_CONFIG_PATH}: {exc}"
+            ) from exc
+
+    for candidate in ENGINE_DJ_DEFAULT_PATHS:
+        resolved = Path(candidate).expanduser()
+        if resolved.exists() and resolved.is_file():
+            return resolved
+
+    return None
+
+
+def save_engine_db_path(path: str) -> None:
+    candidate = Path(path).expanduser()
+    if not candidate.exists() or not candidate.is_file():
+        raise ValueError(f"Invalid Engine DJ database path (file not found): {path}")
+    if candidate.suffix.lower() != ".db":
+        raise ValueError(f"Invalid Engine DJ database path (expected .db file): {path}")
+
+    payload = {"engine_db_path": str(candidate.resolve())}
+    try:
+        ENGINE_DJ_CONFIG_PATH.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    except Exception as exc:
+        raise ValueError(
+            f"Failed to persist Engine DJ config at {ENGINE_DJ_CONFIG_PATH}: {exc}"
+        ) from exc
+
+
+def clear_engine_db_path() -> None:
+    try:
+        if ENGINE_DJ_CONFIG_PATH.exists():
+            ENGINE_DJ_CONFIG_PATH.unlink()
+    except Exception as exc:
+        raise ValueError(
+            f"Failed to clear Engine DJ config at {ENGINE_DJ_CONFIG_PATH}: {exc}"
+        ) from exc
+
+
+def _readonly_uri(db_path: Path) -> str:
+    try:
+        return f"{db_path.resolve().as_uri()}?mode=ro"
+    except Exception as exc:
+        raise ValueError(f"Invalid Engine DJ database path: {db_path}: {exc}") from exc
+
+
+def _normalize_track_path(raw_path: str) -> str:
+    normalized = raw_path.strip().replace("\\", "/")
+    track_path = Path(normalized).expanduser()
+    return str(track_path.resolve(strict=False))
+
+
+def _query_track_playlists(
+    connection: sqlite3.Connection, playlist_table: str
+) -> dict[str, list[str]]:
+    query = f"""
+        SELECT t.path, p.name
+        FROM Track AS t
+        JOIN PlaylistTrack AS pt ON pt.track_id = t.id
+        JOIN {playlist_table} AS p ON p.id = pt.playlist_id
+        WHERE t.path IS NOT NULL
+          AND t.path != ''
+          AND p.name IS NOT NULL
+          AND p.name != ''
+    """
+
+    rows = connection.execute(query).fetchall()
+    mapping: dict[str, list[str]] = {}
+    for track_path_raw, playlist_name in rows:
+        if not isinstance(track_path_raw, str) or not isinstance(playlist_name, str):
+            continue
+
+        track_path = _normalize_track_path(track_path_raw)
+        playlists = mapping.setdefault(track_path, [])
+        if playlist_name not in playlists:
+            playlists.append(playlist_name)
+
+    return mapping
+
+
+def _is_missing_table(error: sqlite3.OperationalError, table_name: str) -> bool:
+    message = str(error).lower()
+    return f"no such table: {table_name.lower()}" in message
+
+
+def read_engine_library(db_path: Path) -> dict[str, list[str]]:
+    if not db_path.exists() or not db_path.is_file():
+        raise ValueError(f"Engine DJ database file not found: {db_path}")
+
+    uri = _readonly_uri(db_path)
+    try:
+        with sqlite3.connect(uri, uri=True) as connection:
+            for playlist_table in ("Playlist", "List"):
+                try:
+                    return _query_track_playlists(connection, playlist_table)
+                except sqlite3.OperationalError as exc:
+                    message = str(exc).lower()
+                    if "database is locked" in message:
+                        raise EngineDJLockedError(
+                            f"Engine DJ database is locked: {db_path}"
+                        ) from exc
+                    if _is_missing_table(exc, "Playlist") and playlist_table == "Playlist":
+                        continue
+                    if _is_missing_table(exc, "List") and playlist_table == "List":
+                        raise EngineDJSchemaError(
+                            "Engine DJ schema not recognized: missing Playlist/List tables"
+                        ) from exc
+                    raise EngineDJSchemaError(
+                        f"Engine DJ schema query failed with table {playlist_table}: {exc}"
+                    ) from exc
+
+            raise EngineDJSchemaError("Engine DJ schema not recognized.")
+    except EngineDJLockedError:
+        raise
+    except EngineDJSchemaError:
+        raise
+    except sqlite3.OperationalError as exc:
+        message = str(exc).lower()
+        if "database is locked" in message:
+            raise EngineDJLockedError(f"Engine DJ database is locked: {db_path}") from exc
+        raise EngineDJSchemaError(
+            f"Failed to open or read Engine DJ database schema: {exc}"
+        ) from exc
+    except Exception as exc:
+        raise ValueError(f"Failed to read Engine DJ database at {db_path}: {exc}") from exc
+
+
+def get_engine_dj_status(db_path: Path | None) -> dict[str, bool | str | None]:
+    if db_path is None:
+        return {"found": False, "path": None, "error": None}
+
+    try:
+        resolved = db_path.expanduser().resolve(strict=False)
+        if not resolved.exists() or not resolved.is_file():
+            return {
+                "found": False,
+                "path": str(resolved),
+                "error": "Configured Engine DJ database path does not exist.",
+            }
+        return {"found": True, "path": str(resolved), "error": None}
+    except Exception as exc:
+        return {"found": False, "path": str(db_path), "error": str(exc)}
+
+
+if __name__ == "__main__":
+    result = find_engine_db()
+    print(result)

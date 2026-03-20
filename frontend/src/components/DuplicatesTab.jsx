@@ -7,6 +7,7 @@ export default function DuplicatesTab({
   selectedCount,
   deleteStatus,
   results,
+  engineDJLibrary = null,
   onAutoSelectAll,
   onClearSelection,
   onOpenDeleteConfirm,
@@ -62,6 +63,7 @@ export default function DuplicatesTab({
                 selected={selected}
                 onToggle={onToggle}
                 onAutoSelect={onAutoSelectGroup}
+                engineDJLibrary={engineDJLibrary}
               />
             ))}
           </div>

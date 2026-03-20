@@ -102,5 +102,21 @@
   "errors": {
     "connection": "Could not connect to the server.",
     "startScan": "Could not start the scan."
+  },
+  "engineDJ": {
+    "title": "Engine DJ",
+    "toggle": "Enable integration",
+    "disabled": "Integration disabled",
+    "checking": "Looking for Engine DJ Library...",
+    "found": "Detected",
+    "notFound": "Library not found",
+    "changePath": "Change path",
+    "manualPathPlaceholder": "Path to m.db file...",
+    "save": "Save",
+    "clearPath": "Remove",
+    "errorPrefix": "Error",
+    "inUse": "in use",
+    "collections": "+{{count}} collections",
+    "modalWarningTitle": "The following files are in use in Engine DJ:"
   }
 }

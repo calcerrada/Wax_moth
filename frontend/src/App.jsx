@@ -12,6 +12,7 @@ import { useDuplicateSelection } from './hooks/useDuplicateSelection'
 import { useFileFilters } from './hooks/useFileFilters'
 import { useDeleteFiles } from './hooks/useDeleteFiles'
 import { useResultsUI } from './hooks/useResultsUI'
+import { useEngineDJ } from './hooks/useEngineDJ'
 
 export default function App() {
   const { t } = useTranslation()
@@ -50,6 +51,8 @@ export default function App() {
     resetFilters,
   } = useFileFilters(results)
 
+  const engineDJ = useEngineDJ()
+
   const {
     selected,
     selectedCount,
@@ -57,7 +60,7 @@ export default function App() {
     autoSelectGroup,
     autoSelectAll,
     clearSelection,
-  } = useDuplicateSelection(results)
+  } = useDuplicateSelection(results, engineDJ.libraryData?.tracks ?? null)
 
   const {
     deleteStatus,
@@ -74,6 +77,11 @@ export default function App() {
   const handleScan = async () => {
     clearSelection()
     resetDeleteState()
+
+    if (engineDJ.isEnabled && engineDJ.status === 'found') {
+      await engineDJ.getLibraryData()
+    }
+
     await handleScanBase()
   }
 
@@ -99,6 +107,8 @@ export default function App() {
           count={selectedCount}
           onConfirm={confirmDelete}
           onCancel={closeDeleteConfirm}
+          engineDJLibrary={engineDJ.libraryData?.tracks ?? null}
+          selectedPaths={[...selected]}
         />
       )}
 
@@ -110,6 +120,7 @@ export default function App() {
           onFolderChange={setFolder}
           onDetectDupsChange={setDetectDups}
           onScan={handleScan}
+          engineDJ={engineDJ}
         />
       )}
 
@@ -175,6 +186,7 @@ export default function App() {
               selectedCount={selectedCount}
               deleteStatus={deleteStatus}
               results={results}
+              engineDJLibrary={engineDJ.libraryData?.tracks ?? null}
               onAutoSelectAll={autoSelectAll}
               onClearSelection={clearSelection}
               onOpenDeleteConfirm={openDeleteConfirm}
