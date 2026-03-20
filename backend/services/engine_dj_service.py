@@ -77,32 +77,79 @@ def _normalize_track_path(raw_path: str) -> str:
     return str(track_path.resolve(strict=False))
 
 
-def _query_track_playlists(
-    connection: sqlite3.Connection, playlist_table: str
-) -> dict[str, list[str]]:
-    query = f"""
-        SELECT t.path, p.name
-        FROM Track AS t
-        JOIN PlaylistTrack AS pt ON pt.track_id = t.id
-        JOIN {playlist_table} AS p ON p.id = pt.playlist_id
-        WHERE t.path IS NOT NULL
-          AND t.path != ''
-          AND p.name IS NOT NULL
-          AND p.name != ''
-    """
+def _query_track_playlists(connection: sqlite3.Connection) -> dict[str, list[str]]:
+    # Each entry: (SQL query, junction table name used for missing-table detection)
+    candidates = [
+        # Engine DJ 4.x
+        (
+            """
+            SELECT t.path, p.title
+            FROM Track AS t
+            JOIN PlaylistEntity AS pe ON pe.trackId = t.id
+            JOIN Playlist AS p ON p.id = pe.listId
+            WHERE t.path IS NOT NULL
+              AND t.path != ''
+              AND p.title IS NOT NULL
+              AND p.title != ''
+            """,
+            "PlaylistEntity",
+        ),
+        # Engine DJ older versions
+        (
+            """
+            SELECT t.path, p.title
+            FROM Track AS t
+            JOIN PlaylistTrack AS pt ON pt.trackId = t.id
+            JOIN Playlist AS p ON p.id = pt.playlistId
+            WHERE t.path IS NOT NULL
+              AND t.path != ''
+              AND p.title IS NOT NULL
+              AND p.title != ''
+            """,
+            "PlaylistTrack",
+        ),
+        # Engine DJ legacy versions
+        (
+            """
+            SELECT t.path, l.title
+            FROM Track AS t
+            JOIN ListTrack AS lt ON lt.trackId = t.id
+            JOIN List AS l ON l.id = lt.listId
+            WHERE t.path IS NOT NULL
+              AND t.path != ''
+              AND l.title IS NOT NULL
+              AND l.title != ''
+            """,
+            "ListTrack",
+        ),
+    ]
 
-    rows = connection.execute(query).fetchall()
-    mapping: dict[str, list[str]] = {}
-    for track_path_raw, playlist_name in rows:
-        if not isinstance(track_path_raw, str) or not isinstance(playlist_name, str):
-            continue
+    last_error: sqlite3.OperationalError | None = None
+    for query, junction_table in candidates:
+        try:
+            rows = connection.execute(query).fetchall()
+            mapping: dict[str, list[str]] = {}
+            for track_path_raw, playlist_name in rows:
+                if not isinstance(track_path_raw, str) or not isinstance(playlist_name, str):
+                    continue
+                track_path = _normalize_track_path(track_path_raw)
+                playlists = mapping.setdefault(track_path, [])
+                if playlist_name not in playlists:
+                    playlists.append(playlist_name)
+            return mapping
+        except sqlite3.OperationalError as exc:
+            if "database is locked" in str(exc).lower():
+                raise EngineDJLockedError("Engine DJ database is locked") from exc
+            if _is_missing_table(exc, junction_table):
+                last_error = exc
+                continue
+            raise EngineDJSchemaError(
+                f"Engine DJ schema query failed ({junction_table}): {exc}"
+            ) from exc
 
-        track_path = _normalize_track_path(track_path_raw)
-        playlists = mapping.setdefault(track_path, [])
-        if playlist_name not in playlists:
-            playlists.append(playlist_name)
-
-    return mapping
+    raise EngineDJSchemaError(
+        "Engine DJ schema not recognized: no known table combination found"
+    ) from last_error
 
 
 def _is_missing_table(error: sqlite3.OperationalError, table_name: str) -> bool:
@@ -117,33 +164,13 @@ def read_engine_library(db_path: Path) -> dict[str, list[str]]:
     uri = _readonly_uri(db_path)
     try:
         with sqlite3.connect(uri, uri=True) as connection:
-            for playlist_table in ("Playlist", "List"):
-                try:
-                    return _query_track_playlists(connection, playlist_table)
-                except sqlite3.OperationalError as exc:
-                    message = str(exc).lower()
-                    if "database is locked" in message:
-                        raise EngineDJLockedError(
-                            f"Engine DJ database is locked: {db_path}"
-                        ) from exc
-                    if _is_missing_table(exc, "Playlist") and playlist_table == "Playlist":
-                        continue
-                    if _is_missing_table(exc, "List") and playlist_table == "List":
-                        raise EngineDJSchemaError(
-                            "Engine DJ schema not recognized: missing Playlist/List tables"
-                        ) from exc
-                    raise EngineDJSchemaError(
-                        f"Engine DJ schema query failed with table {playlist_table}: {exc}"
-                    ) from exc
-
-            raise EngineDJSchemaError("Engine DJ schema not recognized.")
+            return _query_track_playlists(connection)
     except EngineDJLockedError:
         raise
     except EngineDJSchemaError:
         raise
     except sqlite3.OperationalError as exc:
-        message = str(exc).lower()
-        if "database is locked" in message:
+        if "database is locked" in str(exc).lower():
             raise EngineDJLockedError(f"Engine DJ database is locked: {db_path}") from exc
         raise EngineDJSchemaError(
             f"Failed to open or read Engine DJ database schema: {exc}"
