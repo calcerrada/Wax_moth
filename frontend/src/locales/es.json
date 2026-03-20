@@ -37,6 +37,7 @@
     "browseFolder": "buscar carpeta",
     "dropZoneActive": "Suelta para seleccionar carpeta",
     "browseNotSupported": "o escribe la ruta arriba",
+    "folderPathHint": "Nota: Por favor completa la ruta completa. El navegador solo puede acceder al nombre de la carpeta.",
     "detectDuplicates": "Detectar duplicados por huella acústica (fpcalc)",
     "start": "Iniciar escaneo",
     "scanning": "Escaneando...",
