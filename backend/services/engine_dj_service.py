@@ -71,13 +71,23 @@ def _readonly_uri(db_path: Path) -> str:
         raise ValueError(f"Invalid Engine DJ database path: {db_path}: {exc}") from exc
 
 
-def _normalize_track_path(raw_path: str) -> str:
+def _normalize_track_path(raw_path: str, db_path: Path) -> str:
     normalized = raw_path.strip().replace("\\", "/")
-    track_path = Path(normalized).expanduser()
-    return str(track_path.resolve(strict=False))
+    # Detect if path is absolute (Windows C:/ or Unix /)
+    is_absolute = (
+        len(normalized) >= 3 and normalized[1] == ":" and normalized[2] == "/"
+    ) or (normalized.startswith("/"))
+    if is_absolute:
+        # Absolute path: expand tilde and resolve
+        track_path = Path(normalized).expanduser()
+        return str(track_path.resolve(strict=False))
+    else:
+        # Relative path: resolve against db_path directory
+        resolved = (Path(db_path).parent / normalized).resolve()
+        return str(resolved)
 
 
-def _query_track_playlists(connection: sqlite3.Connection) -> dict[str, list[str]]:
+def _query_track_playlists(connection: sqlite3.Connection, db_path: Path) -> dict[str, list[str]]:
     # Each entry: (SQL query, junction table name used for missing-table detection)
     candidates = [
         # Engine DJ 4.x
@@ -132,7 +142,7 @@ def _query_track_playlists(connection: sqlite3.Connection) -> dict[str, list[str
             for track_path_raw, playlist_name in rows:
                 if not isinstance(track_path_raw, str) or not isinstance(playlist_name, str):
                     continue
-                track_path = _normalize_track_path(track_path_raw)
+                track_path = _normalize_track_path(track_path_raw, db_path)
                 playlists = mapping.setdefault(track_path, [])
                 if playlist_name not in playlists:
                     playlists.append(playlist_name)
@@ -164,7 +174,7 @@ def read_engine_library(db_path: Path) -> dict[str, list[str]]:
     uri = _readonly_uri(db_path)
     try:
         with sqlite3.connect(uri, uri=True) as connection:
-            return _query_track_playlists(connection)
+            return _query_track_playlists(connection, db_path)
     except EngineDJLockedError:
         raise
     except EngineDJSchemaError:
